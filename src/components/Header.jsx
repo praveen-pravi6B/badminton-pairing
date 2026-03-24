@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useGoogleSync } from '../hooks/useGoogleSync'
 
-const ADMIN_PASSWORD = 'metro@2026'
+const ADMIN_PASSWORD = import.meta.env.VITE_ADMIN_PASSWORD || 'metro@2026'
 
 function ShuttlecockLoader() {
   return (
