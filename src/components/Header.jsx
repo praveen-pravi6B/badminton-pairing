@@ -22,13 +22,12 @@ export default function Header() {
       <div className="max-w-5xl mx-auto space-y-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-4 group cursor-default">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg shadow-blue-200 transform -rotate-12 transition-all group-hover:rotate-0 group-hover:scale-110">
-               <span className="text-2xl drop-shadow-md">🏸</span>
-            </div>
             <div className="transition-transform group-hover:translate-x-1">
-              <h1 className="text-xl font-black text-slate-900 leading-tight tracking-tighter italic">SMASH<span className="text-blue-600">CENTER</span></h1>
-              <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-1.5 leading-none">
-                Ultimate Management <span className="w-1 h-1 bg-blue-400 rounded-full animate-pulse" />
+              <h1 className="text-2xl font-black text-[#5F59FF] leading-tight tracking-tighter italic uppercase">
+                METROPOLIS
+              </h1>
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-1.5 leading-none">
+                Badminton Tournament <span className="w-1 h-1 bg-[#5F59FF] rounded-full animate-pulse" />
               </p>
             </div>
           </div>

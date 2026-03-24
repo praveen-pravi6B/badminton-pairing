@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --metropolis-purple: #5F59FF;
+  --metropolis-navy: #1A1A2D;
+  --metropolis-lavender: #E0DFFF;
+}
+
 @keyframes tada {
   0% { transform: scale(0.9); }
   10%, 20% { transform: scale(0.9) rotate(-3deg); }

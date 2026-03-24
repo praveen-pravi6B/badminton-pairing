@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import TabNav from './components/TabNav'
 import PlayerPanel from './components/players/PlayerPanel'
@@ -13,12 +13,38 @@ import { useGoogleSync } from './hooks/useGoogleSync'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('players')
-  const { push } = useGoogleSync()
+  const { pull, push } = useGoogleSync()
 
   const { advancedPlayers, intermediatePlayers, isUnequal, addPlayer, editPlayer, deletePlayer, resetPlayers } = usePlayers(push)
   const { pairs, unpaired, roundNumber, generate, reshuffle } = usePairing(push)
   const { matches, sitOut, draw } = useMatches()
   const { stage, groups, groupMatches, semis, final, champion, start, reset, updateMatch, setWinner } = useTournament(pairs, push)
+
+  // Smart Navigation & Initial Sync
+  useEffect(() => {
+    // 1. Initial cloud sync
+    pull()
+
+    // 2. Set starting tab based on data state (deferred to avoid render warnings)
+    const frame = requestAnimationFrame(() => {
+      if (stage !== 'idle') {
+        setActiveTab('tournament')
+      } else if (pairs.length > 0) {
+        setActiveTab('pairing')
+      }
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [pull, stage, pairs.length]) 
+
+  // 3. Auto-switch to Tournament when it starts
+  useEffect(() => {
+    if (stage === 'groups') {
+      const frame = requestAnimationFrame(() => {
+        setActiveTab('tournament')
+      })
+      return () => cancelAnimationFrame(frame)
+    }
+  }, [stage])
 
   return (
     <div className="min-h-screen bg-slate-100">

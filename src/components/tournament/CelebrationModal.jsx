@@ -3,11 +3,11 @@ import { useState } from 'react'
 function Confetti() {
   const [pieces] = useState(() => {
     const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899']
-    return Array.from({ length: 50 }).map((_, i) => ({
+    return Array.from({ length: 80 }).map((_, i) => ({
       id: i,
       left: Math.random() * 100 + '%',
       color: colors[Math.floor(Math.random() * colors.length)],
-      delay: Math.random() * 5 + 's',
+      delay: (Math.random() * 5 - 5) + 's',
       duration: (Math.random() * 3 + 2) + 's',
       rotation: Math.random() * 360 + 'deg'
     }))
@@ -37,44 +37,51 @@ export default function CelebrationModal({ champion, pairs, onReset }) {
   const team = pairs.find((p) => p.courtNumber === champion)
 
   return (
-    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 sm:p-6">
+    <div className="fixed inset-0 z-[110] flex flex-col items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-md animate-in fade-in duration-500" />
+      <div className="fixed inset-0 bg-slate-900/95 backdrop-blur-xl animate-in fade-in duration-700" />
       
       {/* Confetti */}
       <Confetti />
 
       {/* Content */}
-    <div className="relative bg-white rounded-3xl p-8 sm:p-12 max-w-lg w-full text-center shadow-2xl shadow-blue-500/20 animate-in zoom-in slide-in-from-bottom-8 duration-700">
-        <div className="relative inline-block mb-6">
-          <div className="absolute inset-0 bg-blue-400/20 blur-3xl rounded-full animate-pulse" />
-          <div className="text-9xl mb-2 animate-tada relative z-10">🏆</div>
-        </div>
+      <div className="relative bg-white rounded-[2rem] p-5 sm:p-8 max-w-md w-full max-h-[80vh] flex flex-col items-center shadow-[0_0_40px_rgba(37,99,235,0.2)] animate-in zoom-in slide-in-from-bottom-8 duration-700">
         
-        <h2 className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600 mb-2">Tournament Champion</h2>
-        <h1 className="text-4xl font-black text-slate-900 italic tracking-tighter mb-8 uppercase">
-          SMASH<span className="text-blue-600">CENTER</span> VICTOR
-        </h1>
+        {/* Scrollable Area */}
+        <div className="flex-1 w-full overflow-y-auto pr-1 flex flex-col items-center text-center custom-scrollbar pt-6">
+          <div className="relative inline-block mb-4">
+            <div className="absolute inset-0 bg-blue-400/20 blur-2xl rounded-full animate-pulse" />
+            <div className="text-6xl sm:text-7xl mb-1 animate-tada relative z-10">🏆</div>
+          </div>
+          
+          <h2 className="text-[9px] font-black uppercase tracking-[0.2em] text-[#5F59FF] mb-1">Badminton Tournament</h2>
+          <h1 className="text-2xl sm:text-3xl font-black text-[#5F59FF] italic tracking-tighter mb-6 uppercase leading-tight">
+            METROPOLIS CHAMPION
+          </h1>
 
-        <div className="bg-slate-50 border-2 border-slate-100 rounded-3xl p-8 mb-8 transform hover:scale-105 transition-transform">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Team {champion}</p>
-          <div className="space-y-2">
-            <p className="text-3xl font-black text-slate-900 italic tracking-tight">{team?.advanced}</p>
-            <div className="w-8 h-1 bg-blue-600 mx-auto rounded-full" />
-            <p className="text-xl font-bold text-slate-500">{team?.intermediate}</p>
+          <div className="bg-slate-50 border-2 border-slate-100 rounded-2xl p-4 sm:p-6 mb-3">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Team {champion}</p>
+            <div className="space-y-1">
+              <p className="text-xl sm:text-2xl font-black text-slate-900 italic tracking-tight leading-tight">{team?.advanced}</p>
+              <div className="w-6 h-1 bg-blue-600 mx-auto rounded-full" />
+              <p className="text-base sm:text-lg font-bold text-slate-500">{team?.intermediate}</p>
+            </div>
           </div>
         </div>
 
-        <button 
-          onClick={onReset}
-          className="w-full py-4 bg-slate-900 text-white text-sm font-black uppercase tracking-widest rounded-2xl hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-200 transition-all active:scale-95"
-        >
-          Reset Tournament
-        </button>
-        
-        <p className="text-[10px] text-slate-400 mt-6 font-bold uppercase tracking-widest leading-none">
-          Congratulations to the champions of April 17th!
-        </p>
+        {/* Fixed Footer */}
+        <div className="pt-4 space-y-3">
+          <button 
+            onClick={onReset}
+            className="w-full py-3 bg-slate-900 text-white text-xs font-black uppercase tracking-widest rounded-xl hover:bg-blue-600 hover:shadow-lg hover:shadow-blue-200 transition-all active:scale-95"
+          >
+            Reset Tournament
+          </button>
+          
+          <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest leading-none">
+            Congratulations to the Metropolis Winners!
+          </p>
+        </div>
       </div>
     </div>
   )
