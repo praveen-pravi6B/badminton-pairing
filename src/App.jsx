@@ -9,14 +9,16 @@ import { usePlayers } from './hooks/usePlayers'
 import { usePairing } from './hooks/usePairing'
 import { useMatches } from './hooks/useMatches'
 import { useTournament } from './hooks/useTournament'
+import { useGoogleSync } from './hooks/useGoogleSync'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('players')
+  const { push } = useGoogleSync()
 
-  const { advancedPlayers, intermediatePlayers, isUnequal, addPlayer, editPlayer, deletePlayer, resetPlayers } = usePlayers()
-  const { pairs, unpaired, roundNumber, generate, reshuffle } = usePairing()
+  const { advancedPlayers, intermediatePlayers, isUnequal, addPlayer, editPlayer, deletePlayer, resetPlayers } = usePlayers(push)
+  const { pairs, unpaired, roundNumber, generate, reshuffle } = usePairing(push)
   const { matches, sitOut, draw } = useMatches()
-  const { stage, groups, groupMatches, semis, final, champion, start, reset, updateMatch, setWinner } = useTournament(pairs)
+  const { stage, groups, groupMatches, semis, final, champion, start, reset, updateMatch, setWinner } = useTournament(pairs, push)
 
   return (
     <div className="min-h-screen bg-slate-100">

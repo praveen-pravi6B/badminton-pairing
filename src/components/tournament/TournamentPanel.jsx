@@ -59,15 +59,17 @@ function formatTime(startTime, minutesToAdd) {
 }
 
 function ScheduleEstimator({ 
-  groupMatchCount, 
+  matchCount, 
   courtCount, 
   matchDuration = 20, 
   leagueBreak = 10,
   knockoutBreak = 15,
   startTime = "2026-04-17T13:00:00"
 }) {
-  const leagueRounds = Math.ceil(groupMatchCount / courtCount)
-  const leagueTotal = (leagueRounds * matchDuration) + ((leagueRounds - 1) * leagueBreak)
+  const leagueRounds = Math.ceil((matchCount || 0) / courtCount)
+  const leagueTotal = leagueRounds > 0 
+    ? (leagueRounds * matchDuration) + ((leagueRounds - 1) * leagueBreak)
+    : 0
   
   // Total includes 2 knockout stages (SF, Final) + 2 breaks
   const totalMins = leagueTotal + knockoutBreak + matchDuration + knockoutBreak + matchDuration
@@ -104,8 +106,6 @@ export default function TournamentPanel({ pairs, stage, groups, groupMatches, se
   const groupAComplete = groupMatches.A.length > 0 && groupMatches.A.every((m) => m.winner !== null)
   const groupBComplete = groupMatches.B.length > 0 && groupMatches.B.every((m) => m.winner !== null)
   
-  const totalGroupMatches = groupMatches.A.length + groupMatches.B.length
-
   const semiComplete = semis.length > 0 && semis.every((m) => m.winner !== null)
   const finalComplete = stage === 'champion'
 
@@ -137,7 +137,6 @@ export default function TournamentPanel({ pairs, stage, groups, groupMatches, se
 
         {stage === 'groups' && (
           <div className="w-full sm:w-auto flex flex-col items-end gap-2">
-            <ScheduleEstimator matchCount={totalGroupMatches} courtCount={3} matchDuration={20} />
             {groupAComplete && groupBComplete && (
               <span className="text-xs px-2 py-1 rounded-full bg-emerald-100 text-emerald-700 font-bold animate-pulse">
                 All Group Matches Complete! Knockout Stage Ready ↓
@@ -178,7 +177,7 @@ export default function TournamentPanel({ pairs, stage, groups, groupMatches, se
                       <span>⚔️</span> Stage 1: Group Stage
                     </h2>
                     <ScheduleEstimator 
-                      groupMatchCount={groupMatches.A.length + groupMatches.B.length} 
+                      matchCount={groupMatches.A.length + groupMatches.B.length} 
                       courtCount={3} 
                     />
                   </div>

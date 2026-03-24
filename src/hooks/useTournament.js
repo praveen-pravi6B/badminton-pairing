@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { LS_KEYS } from '../constants/defaults'
 
 function shuffleArray(arr) {
   const a = [...arr]
@@ -152,8 +153,36 @@ const INITIAL = {
   champion: null,
 }
 
-export function useTournament(pairs) {
-  const [state, setState] = useState(INITIAL)
+function loadTournament() {
+  try {
+    const stored = localStorage.getItem(LS_KEYS.TOURNAMENT)
+    if (stored) return JSON.parse(stored)
+  } catch (e) {
+    console.error('Failed to load tournament from localStorage', e)
+  }
+  return INITIAL
+}
+
+export function useTournament(pairs, push) {
+  const [state, setState] = useState(loadTournament)
+  const initialized = useRef(false)
+
+  // Auto-save to cloud on change (Debounced)
+  useEffect(() => {
+    localStorage.setItem(LS_KEYS.TOURNAMENT, JSON.stringify(state))
+    
+    if (!initialized.current) {
+      initialized.current = true
+      return
+    }
+
+    const timer = setTimeout(() => {
+      push()
+    }, 2000)
+
+    return () => clearTimeout(timer)
+  }, [state, push])
+
   const { stage, groups, groupMatches, semis, final, champion } = state
 
   const start = () => {
