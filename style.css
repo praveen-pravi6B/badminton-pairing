@@ -1,0 +1,328 @@
+/* ============================================
+   BADMINTON PAIRING APP - STYLESHEET
+   ============================================ */
+
+/* --- Reset & Base --- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f0f4f8;
+  color: #2d3748;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* --- Main wrapper --- */
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  padding: 40px 36px;
+}
+
+/* --- Page Title --- */
+h1 {
+  font-size: 2rem;
+  text-align: center;
+  color: #1a365d;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #718096;
+  margin-bottom: 32px;
+  font-size: 0.95rem;
+}
+
+/* ============================================
+   INPUT SECTION — two columns side by side
+   ============================================ */
+.input-section {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 28px;
+}
+
+/* Each column (Advanced / Intermediate) */
+.player-group {
+  flex: 1;
+}
+
+.player-group h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 8px;
+}
+
+/* Advanced column header = blue */
+.advanced-title {
+  background: #ebf8ff;
+  color: #2b6cb0;
+  border-left: 4px solid #3182ce;
+}
+
+/* Intermediate column header = green */
+.intermediate-title {
+  background: #f0fff4;
+  color: #276749;
+  border-left: 4px solid #38a169;
+}
+
+.player-group h2 span {
+  font-weight: 400;
+  font-size: 0.85rem;
+  opacity: 0.7;
+}
+
+/* Individual player input field */
+.player-input-wrap {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.player-number {
+  font-size: 0.8rem;
+  color: #a0aec0;
+  width: 20px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.player-input-wrap input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.player-input-wrap input:focus {
+  border-color: #63b3ed;
+  box-shadow: 0 0 0 3px rgba(99,179,237,0.2);
+}
+
+/* Highlight missing (empty) fields */
+.player-input-wrap input.error {
+  border-color: #fc8181;
+  box-shadow: 0 0 0 3px rgba(252,129,129,0.2);
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+.button-row {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 28px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s, opacity 0.2s;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* Primary — Generate */
+#generate-btn {
+  background: #3182ce;
+  color: #fff;
+}
+#generate-btn:hover {
+  background: #2b6cb0;
+}
+
+/* Secondary — Reshuffle */
+.secondary {
+  background: #e2e8f0;
+  color: #4a5568;
+}
+.secondary:hover:not(:disabled) {
+  background: #cbd5e0;
+}
+.secondary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Danger — Reset */
+.danger {
+  background: #fff5f5;
+  color: #c53030;
+  border: 1.5px solid #fed7d7;
+}
+.danger:hover {
+  background: #fed7d7;
+}
+
+/* ============================================
+   ROUND INFO BAR
+   ============================================ */
+.round-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fffaf0;
+  border: 1px solid #fbd38d;
+  border-radius: 8px;
+  padding: 8px 16px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+}
+
+#round-label {
+  font-weight: 700;
+  color: #c05621;
+}
+
+#history-note {
+  color: #718096;
+  font-size: 0.82rem;
+}
+
+/* ============================================
+   RESULTS SECTION — pair cards
+   ============================================ */
+.results h2 {
+  text-align: center;
+  font-size: 1.1rem;
+  color: #2d3748;
+  margin-bottom: 16px;
+  letter-spacing: 0.03em;
+}
+
+#pairs-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+/* Single pair card */
+.pair-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f7fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 14px 16px;
+  animation: slideIn 0.3s ease forwards;
+  opacity: 0;
+}
+
+/* Stagger card animations */
+.pair-card:nth-child(1) { animation-delay: 0.05s; }
+.pair-card:nth-child(2) { animation-delay: 0.10s; }
+.pair-card:nth-child(3) { animation-delay: 0.15s; }
+.pair-card:nth-child(4) { animation-delay: 0.20s; }
+.pair-card:nth-child(5) { animation-delay: 0.25s; }
+.pair-card:nth-child(6) { animation-delay: 0.30s; }
+.pair-card:nth-child(7) { animation-delay: 0.35s; }
+.pair-card:nth-child(8) { animation-delay: 0.40s; }
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Court number badge */
+.court-badge {
+  background: #1a365d;
+  color: #fff;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 8px;
+  flex-shrink: 0;
+  text-align: center;
+  min-width: 44px;
+}
+
+/* Player names inside the card */
+.pair-names {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.player-tag {
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+}
+
+/* Advanced player tag = blue */
+.player-tag.advanced {
+  background: #ebf8ff;
+  color: #2b6cb0;
+}
+
+/* Intermediate player tag = green */
+.player-tag.intermediate {
+  background: #f0fff4;
+  color: #276749;
+}
+
+/* VS divider */
+.vs {
+  font-size: 0.7rem;
+  color: #a0aec0;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* ============================================
+   UTILITY
+   ============================================ */
+.hidden {
+  display: none;
+}
+
+/* Error message banner */
+.error-msg {
+  background: #fff5f5;
+  color: #c53030;
+  border: 1px solid #fed7d7;
+  border-radius: 8px;
+  padding: 10px 16px;
+  text-align: center;
+  margin-bottom: 16px;
+  font-size: 0.9rem;
+}
+
+/* Responsive: stack columns on small screens */
+@media (max-width: 600px) {
+  .input-section {
+    flex-direction: column;
+  }
+  #pairs-container {
+    grid-template-columns: 1fr;
+  }
+  .container {
+    padding: 24px 16px;
+  }
+}
