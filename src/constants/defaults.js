@@ -9,6 +9,8 @@ export const LS_KEYS = {
   ROUND_NUMBER: 'badminton_round_number',
   TOURNAMENT: 'badminton_tournament',
   GS_URL: 'badminton_gs_url',
+  LAST_UPDATE: 'badminton_last_update',
+  IS_ADMIN: 'metropolis_is_admin'
 }
 
 export const DEFAULT_GS_URL = "https://script.google.com/macros/s/AKfycbzWE2wvgA9ZQEX8QmjBzksnKV2m6t-IxaslJIZtE5svatgeikCfgz5mSgIZ1_wO9pS0lA/exec"

@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 import { LS_KEYS, DEFAULT_GS_URL } from '../constants/defaults'
 
-export function useGoogleSync() {
+export function useGoogleSync(isAdmin) {
   const [isSyncing, setIsSyncing] = useState(false)
   const [lastSync, setLastSync] = useState(null)
   const url = localStorage.getItem(LS_KEYS.GS_URL) || DEFAULT_GS_URL
@@ -13,16 +13,16 @@ export function useGoogleSync() {
       const response = await fetch(url)
       const cloudData = await response.json()
       
-      let changed = false
-      Object.entries(cloudData).forEach(([key, value]) => {
-        if (value && localStorage.getItem(key) !== value) {
-          localStorage.setItem(key, value)
-          changed = true
-        }
-      })
-      
+      const cloudTs = Number(cloudData[LS_KEYS.LAST_UPDATE]) || 0
+      const localTs = Number(localStorage.getItem(LS_KEYS.LAST_UPDATE)) || 0
+
+      if (cloudTs > localTs) {
+        Object.entries(cloudData).forEach(([key, value]) => {
+          if (value) localStorage.setItem(key, value)
+        })
+        window.location.reload()
+      }
       setLastSync(new Date())
-      if (changed) window.location.reload()
     } catch (err) {
       console.error('Sync pull failed:', err)
     } finally {
@@ -31,14 +31,18 @@ export function useGoogleSync() {
   }, [url])
 
   const push = useCallback(async () => {
-    if (!url) return
+    if (!url || !isAdmin) return
     setIsSyncing(true)
     try {
+      const now = Date.now().toString()
+      localStorage.setItem(LS_KEYS.LAST_UPDATE, now)
+      
       const payload = {
         [LS_KEYS.PLAYERS]: localStorage.getItem(LS_KEYS.PLAYERS),
         [LS_KEYS.LAST_PAIRS]: localStorage.getItem(LS_KEYS.LAST_PAIRS),
         [LS_KEYS.ROUND_NUMBER]: localStorage.getItem(LS_KEYS.ROUND_NUMBER),
         [LS_KEYS.TOURNAMENT]: localStorage.getItem(LS_KEYS.TOURNAMENT),
+        [LS_KEYS.LAST_UPDATE]: now,
       }
       
       await fetch(url, {
@@ -52,7 +56,7 @@ export function useGoogleSync() {
     } finally {
       setIsSyncing(false)
     }
-  }, [url])
+  }, [url, isAdmin])
 
   return { url, isSyncing, lastSync, pull, push }
 }

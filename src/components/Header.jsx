@@ -13,8 +13,8 @@ function ShuttlecockLoader() {
   )
 }
 
-export default function Header() {
-  const { isSyncing, lastSync } = useGoogleSync()
+export default function Header({ isAdmin, onSetAdmin }) {
+  const { isSyncing, lastSync } = useGoogleSync(isAdmin)
   const [showConfig, setShowConfig] = useState(false)
 
   return (
@@ -58,37 +58,62 @@ export default function Header() {
 
         {showConfig && (
           <div className="bg-slate-900 text-white rounded-2xl p-6 animate-in fade-in slide-in-from-top-4 duration-500 shadow-2xl shadow-blue-900/20">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center justify-between mb-6">
               <h3 className="text-[10px] font-black uppercase tracking-widest text-blue-400">System Information</h3>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-bold bg-white/10 px-2 py-1 rounded">V 2.0.0</span>
-                <span className="text-[10px] font-bold bg-blue-500/20 text-blue-400 px-2 py-1 rounded">STABLE</span>
+                {isAdmin ? (
+                  <span className="text-[10px] font-bold bg-emerald-500/20 text-emerald-400 px-2 py-1 rounded">ADMIN ACCESS</span>
+                ) : (
+                  <span className="text-[10px] font-bold bg-white/5 text-slate-500 px-2 py-1 rounded">VIEW ONLY</span>
+                )}
               </div>
             </div>
             
-            <div className="space-y-4">
-              <div className="flex items-center justify-between py-3 border-b border-white/5">
-                <span className="text-xs text-slate-400">Cloud Storage</span>
-                <span className="text-xs font-bold text-emerald-400">ENABLED & SECURE</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+              <div className="space-y-1">
+                <div className="flex items-center justify-between py-2.5 border-b border-white/5">
+                  <span className="text-xs text-slate-500 font-medium">Cloud Storage</span>
+                  <span className="text-[10px] font-black text-emerald-400 uppercase italic">Active</span>
+                </div>
+                <div className="flex items-center justify-between py-2.5 border-b border-white/5">
+                  <span className="text-xs text-slate-500 font-medium">Last Cloud Sync</span>
+                  <span className="text-[10px] font-black text-blue-400 uppercase">
+                    {lastSync ? lastSync.toLocaleTimeString() : 'PENDING'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between py-2.5">
+                  <span className="text-xs text-slate-500 font-medium">Sync Interval</span>
+                  <span className="text-[10px] font-black text-slate-300 uppercase tracking-tighter italic">Real-Time</span>
+                </div>
               </div>
-              <div className="flex items-center justify-between py-3 border-b border-white/5">
-                <span className="text-xs text-slate-400">Sync Interval</span>
-                <span className="text-xs font-bold text-slate-200 italic">REAL-TIME / 2S BUFFER</span>
-              </div>
-              <div className="flex items-center justify-between py-3">
-                <span className="text-xs text-slate-400">Last Database Sync</span>
-                <span className="text-xs font-bold text-blue-400">
-                  {lastSync ? lastSync.toLocaleTimeString() : 'PULLING DATA...'}
-                </span>
+
+              <div className="bg-white/[0.03] rounded-2xl p-4 border border-white/5 flex flex-col justify-center">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Admin Mode</span>
+                  <button 
+                    onClick={() => onSetAdmin(!isAdmin)}
+                    className={`relative w-10 h-5 rounded-full transition-all duration-300 ${isAdmin ? 'bg-blue-600 shadow-[0_0_12px_rgba(37,99,235,0.4)]' : 'bg-slate-700'}`}
+                  >
+                    <div className={`absolute top-1 w-3 h-3 bg-white rounded-full transition-all duration-300 ${isAdmin ? 'left-6' : 'left-1'}`} />
+                  </button>
+                </div>
+                <p className="text-[9px] text-slate-500 leading-normal italic">
+                  {isAdmin 
+                    ? "Organizers: All editing and reset controls are now enabled." 
+                    : "Viewers: Editing and resetting are disabled to protect data."}
+                </p>
               </div>
             </div>
             
-            <div className="mt-6 pt-4 border-t border-white/5 flex items-center gap-3">
-              <div className="w-8 h-8 bg-blue-600/20 rounded-lg flex items-center justify-center text-blue-400 text-sm">
+            <div className="mt-2 pt-4 border-t border-white/5 flex items-center gap-3">
+              <div className="w-8 h-8 bg-blue-600/10 rounded-lg flex items-center justify-center text-blue-400/80 text-sm">
                 ℹ️
               </div>
-              <p className="text-[10px] text-slate-400 leading-relaxed italic">
-                Manual configuration has been disabled for security. Your data is being safely stored in the designated Google Cloud Sheet.
+              <p className="text-[10px] text-slate-500 leading-relaxed italic">
+                {isAdmin 
+                  ? "You are currently pushing live updates to the designated Google Sheet." 
+                  : "You are currently viewing a live-synced version of the tournament."}
               </p>
             </div>
           </div>

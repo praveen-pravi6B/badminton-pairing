@@ -93,7 +93,7 @@ function ScheduleEstimator({
   )
 }
 
-export default function TournamentPanel({ pairs, stage, groups, groupMatches, semis, final, champion, onStart, onReset, onUpdate, onSetWinner }) {
+export default function TournamentPanel({ isAdmin, pairs, stage, groups, groupMatches, semis, final, champion, onStart, onReset, onUpdate, onSetWinner }) {
   if (pairs.length === 0) {
     return (
       <div className="max-w-5xl mx-auto p-4 sm:p-6 text-center py-16 text-slate-400">
@@ -114,26 +114,28 @@ export default function TournamentPanel({ pairs, stage, groups, groupMatches, se
 
       {/* Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-        <div className="flex items-center gap-3">
-          {stage === 'idle' ? (
-            <button 
-              onClick={onStart} 
-              disabled={pairs.length < 4}
-              className={`px-4 py-2 text-white text-sm font-medium rounded-lg transition-colors ${
-                pairs.length < 4 ? 'bg-slate-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
-              }`}
-            >
-              Start Tournament
-            </button>
-          ) : (
-            <button onClick={onReset} className="px-4 py-2 border border-slate-300 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
-              Reset
-            </button>
-          )}
-          {stage === 'idle' && pairs.length < 4 && (
-            <span className="text-xs text-amber-600 font-medium">Need at least 4 teams</span>
-          )}
-        </div>
+        {isAdmin && (
+          <div className="flex items-center gap-3">
+            {stage === 'idle' ? (
+              <button 
+                onClick={onStart} 
+                disabled={pairs.length < 4}
+                className={`px-4 py-2 text-white text-sm font-medium rounded-lg transition-colors ${
+                  pairs.length < 4 ? 'bg-slate-300 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'
+                }`}
+              >
+                Start Tournament
+              </button>
+            ) : (
+              <button onClick={onReset} className="px-4 py-2 border border-slate-300 text-slate-600 text-sm font-medium rounded-lg hover:bg-slate-50 transition-colors">
+                Reset
+              </button>
+            )}
+            {stage === 'idle' && pairs.length < 4 && (
+              <span className="text-xs text-amber-600 font-medium">Need at least 4 teams</span>
+            )}
+          </div>
+        )}
 
         {stage === 'groups' && (
           <div className="w-full sm:w-auto flex flex-col items-end gap-2">
