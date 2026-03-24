@@ -16,7 +16,7 @@ export default function App() {
   const { advancedPlayers, intermediatePlayers, isUnequal, addPlayer, editPlayer, deletePlayer, resetPlayers } = usePlayers()
   const { pairs, unpaired, roundNumber, generate, reshuffle } = usePairing()
   const { matches, sitOut, draw } = useMatches()
-  const { stage, round1, semis, final, champion, start, reset, updateMatch, setWinner } = useTournament(pairs)
+  const { stage, groups, groupMatches, semis, final, champion, start, reset, updateMatch, setWinner } = useTournament(pairs)
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -55,7 +55,8 @@ export default function App() {
         <TournamentPanel
           pairs={pairs}
           stage={stage}
-          round1={round1}
+          groups={groups}
+          groupMatches={groupMatches}
           semis={semis}
           final={final}
           champion={champion}
