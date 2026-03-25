@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Header from './components/Header'
 import TabNav from './components/TabNav'
 import PlayerPanel from './components/players/PlayerPanel'
@@ -9,22 +9,58 @@ import { usePlayers } from './hooks/usePlayers'
 import { usePairing } from './hooks/usePairing'
 import { useMatches } from './hooks/useMatches'
 import { useTournament } from './hooks/useTournament'
+import { useGoogleSync } from './hooks/useGoogleSync'
+import { LS_KEYS } from './constants/defaults'
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('players')
+  const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem(LS_KEYS.IS_ADMIN) === 'true')
+  const { pull, push } = useGoogleSync(isAdmin)
 
-  const { advancedPlayers, intermediatePlayers, isUnequal, addPlayer, editPlayer, deletePlayer, resetPlayers } = usePlayers()
-  const { pairs, unpaired, roundNumber, generate, reshuffle } = usePairing()
+  const { advancedPlayers, intermediatePlayers, isUnequal, addPlayer, editPlayer, deletePlayer, resetPlayers } = usePlayers(push)
+  const { pairs, unpaired, roundNumber, generate, reshuffle } = usePairing(push)
   const { matches, sitOut, draw } = useMatches()
-  const { stage, round1, semis, final, champion, start, reset, updateMatch, setWinner } = useTournament(pairs)
+  const { stage, groups, groupMatches, semis, final, champion, start, reset, updateMatch, setWinner } = useTournament(pairs, push)
+
+  const handleSetAdmin = (val) => {
+    setIsAdmin(val)
+    localStorage.setItem(LS_KEYS.IS_ADMIN, String(val))
+  }
+
+  // Smart Navigation & Initial Sync
+  useEffect(() => {
+    // 1. Initial cloud sync
+    pull()
+
+    // 2. Set starting tab based on data state (deferred to avoid render warnings)
+    const frame = requestAnimationFrame(() => {
+      if (stage !== 'idle') {
+        setActiveTab('tournament')
+      } else if (pairs.length > 0) {
+        setActiveTab('pairing')
+      }
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [pull, stage, pairs.length]) 
+
+  // 3. Auto-switch to Tournament when it starts
+  useEffect(() => {
+    if (stage === 'groups') {
+      const frame = requestAnimationFrame(() => {
+        setActiveTab('tournament')
+      })
+      return () => cancelAnimationFrame(frame)
+    }
+  }, [stage])
 
   return (
     <div className="min-h-screen bg-slate-100">
-      <Header />
+      <Header isAdmin={isAdmin} onSetAdmin={handleSetAdmin} />
       <TabNav activeTab={activeTab} onTabChange={setActiveTab} />
 
       {activeTab === 'players' && (
         <PlayerPanel
+          isAdmin={isAdmin}
           advancedPlayers={advancedPlayers}
           intermediatePlayers={intermediatePlayers}
           onAdd={addPlayer}
@@ -36,6 +72,7 @@ export default function App() {
 
       {activeTab === 'pairing' && (
         <PairingPanel
+          isAdmin={isAdmin}
           advancedPlayers={advancedPlayers}
           intermediatePlayers={intermediatePlayers}
           isUnequal={isUnequal}
@@ -48,14 +85,16 @@ export default function App() {
       )}
 
       {activeTab === 'matches' && (
-        <MatchesPanel pairs={pairs} matches={matches} sitOut={sitOut} onDraw={draw} />
+        <MatchesPanel isAdmin={isAdmin} pairs={pairs} matches={matches} sitOut={sitOut} onDraw={draw} />
       )}
 
       {activeTab === 'tournament' && (
         <TournamentPanel
+          isAdmin={isAdmin}
           pairs={pairs}
           stage={stage}
-          round1={round1}
+          groups={groups}
+          groupMatches={groupMatches}
           semis={semis}
           final={final}
           champion={champion}

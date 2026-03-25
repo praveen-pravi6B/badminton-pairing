@@ -2,6 +2,7 @@ import PairingControls from './PairingControls'
 import PairCard from './PairCard'
 
 export default function PairingPanel({
+  isAdmin,
   advancedPlayers,
   intermediatePlayers,
   isUnequal,
@@ -19,6 +20,7 @@ export default function PairingPanel({
   return (
     <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
       <PairingControls
+        isAdmin={isAdmin}
         isUnequal={isUnequal}
         advancedCount={advancedPlayers.length}
         intermediateCount={intermediatePlayers.length}

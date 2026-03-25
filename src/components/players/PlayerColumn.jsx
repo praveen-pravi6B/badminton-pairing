@@ -1,6 +1,6 @@
 import PlayerCard from './PlayerCard'
 
-export default function PlayerColumn({ title, players, colorClass, onEdit, onDelete }) {
+export default function PlayerColumn({ title, players, colorClass, isAdmin, onEdit, onDelete }) {
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div className={`px-4 py-3 border-b ${colorClass}`}>
@@ -16,7 +16,7 @@ export default function PlayerColumn({ title, players, colorClass, onEdit, onDel
           <p className="text-slate-400 text-sm text-center py-8">No players yet</p>
         ) : (
           players.map((p) => (
-            <PlayerCard key={p.id} player={p} onEdit={onEdit} onDelete={onDelete} />
+            <PlayerCard key={p.id} player={p} isAdmin={isAdmin} onEdit={onEdit} onDelete={onDelete} />
           ))
         )}
       </div>
